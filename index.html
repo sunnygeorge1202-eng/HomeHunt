@@ -1,0 +1,901 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0D2B1F">
+<link rel="manifest" href="manifest.json">
+<title>HomeHunt Bengaluru</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0D2B1F;--bg2:#143828;--bg3:#1c4a35;--cream:#F5F0E8;--gold:#C9A84C;--mute:#aebdb2;--red:#e58a7b;--ok:#86d4a0;--line:rgba(245,240,232,.14)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--cream);font:15px/1.45 Inter,system-ui,sans-serif;padding-bottom:84px}
+h1,h2,h3{font-family:'Playfair Display',serif;margin:0}
+a{color:var(--gold)}
+header{padding:16px 16px 8px}
+header h1{font-size:26px}
+header .sub{color:var(--mute);font-size:13px;margin-top:2px}
+.count{display:inline-block;margin-top:8px;padding:4px 10px;border:1px solid var(--gold);border-radius:99px;color:var(--gold);font-size:12.5px}
+.syncst{float:right;font-size:12px;color:var(--mute);margin-top:6px}
+nav{display:flex;gap:4px;padding:8px 12px;position:sticky;top:0;background:var(--bg);z-index:5;border-bottom:1px solid var(--line)}
+nav button{flex:1;background:none;border:0;color:var(--mute);padding:9px 4px;font:500 14px Inter;border-radius:8px}
+nav button.on{background:var(--bg3);color:var(--gold)}
+main{padding:12px;max-width:900px;margin:auto}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px}
+.chip{white-space:nowrap;background:var(--bg2);border:1px solid var(--line);color:var(--cream);padding:6px 11px;border-radius:99px;font-size:13px}
+.chip.on{background:var(--gold);color:var(--bg);border-color:var(--gold)}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+input,select,textarea{background:var(--bg2);border:1px solid var(--line);color:var(--cream);padding:9px 10px;border-radius:8px;font:14px Inter;width:100%}
+textarea{min-height:70px}
+label{display:block;font-size:12px;color:var(--mute);margin:8px 0 3px}
+.card{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:12px;margin:10px 0}
+.card h3{font-size:18px}
+.meta{color:var(--mute);font-size:13px;margin-top:2px}
+.price{margin-top:6px;font-weight:600}
+.score{float:right;background:var(--gold);color:var(--bg);border-radius:8px;padding:3px 9px;font-weight:700}
+.flag{display:inline-block;background:rgba(229,138,123,.15);color:var(--red);border-radius:6px;padding:2px 7px;font-size:12px;margin:4px 4px 0 0}
+.good{background:rgba(134,212,160,.14);color:var(--ok)}
+.btn{background:var(--bg3);color:var(--cream);border:1px solid var(--line);padding:8px 12px;border-radius:8px;font:500 13.5px Inter;text-decoration:none;display:inline-block;cursor:pointer}
+.btn.gold{background:var(--gold);color:var(--bg);border-color:var(--gold)}
+.btn.sm{padding:5px 9px;font-size:12.5px}
+.btn.red{color:var(--red)}
+.actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;align-items:center}
+.fab{position:fixed;right:16px;bottom:18px;width:56px;height:56px;border-radius:50%;background:var(--gold);color:var(--bg);font-size:30px;border:0;box-shadow:0 6px 18px rgba(0,0,0,.4);z-index:8}
+dialog{background:var(--bg);color:var(--cream);border:1px solid var(--gold);border-radius:14px;width:min(640px,96vw);max-height:92vh;padding:0}
+dialog::backdrop{background:rgba(0,0,0,.6)}
+.dlg{padding:16px;overflow:auto;max-height:90vh}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.checks{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px}
+.checks label{display:flex;gap:7px;align-items:center;color:var(--cream);font-size:13.5px;margin:3px 0}
+.checks input{width:auto}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+td,th{border-bottom:1px solid var(--line);padding:7px 6px;text-align:left;vertical-align:top}
+th{color:var(--gold);font-weight:600}
+.scroll{overflow-x:auto}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:90px;background:var(--cream);color:var(--bg);padding:9px 14px;border-radius:99px;font-size:13.5px;z-index:50}
+.sec{margin-top:16px;color:var(--gold);font-family:'Playfair Display',serif;font-size:17px}
+.call{font-size:12.5px;color:var(--mute);border-left:2px solid var(--gold);padding-left:8px;margin:4px 0}
+.empty{color:var(--mute);text-align:center;padding:40px 10px}
+.stop{border-left:3px solid var(--gold)}
+input[type=range]{padding:0}
+.vm{position:fixed;inset:0;background:var(--bg);z-index:30;display:none;flex-direction:column}
+.vm.on{display:flex}
+.vmtop{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line)}
+.vmbody{flex:1;overflow:auto;padding:20px 16px 30px;display:flex;flex-direction:column;gap:14px;max-width:560px;margin:auto;width:100%}
+.vmq{font:600 24px/1.25 'Playfair Display',serif}
+.vmhint{color:var(--mute);font-size:14px}
+.big{width:100%;padding:18px;border-radius:14px;font:600 17px Inter;border:1px solid var(--line);background:var(--bg2);color:var(--cream)}
+.big.ok{background:rgba(134,212,160,.16);border-color:var(--ok)}
+.big.warn{background:rgba(229,138,123,.14);border-color:var(--red)}
+.big.sel{outline:2px solid var(--gold)}
+.bar{height:4px;background:var(--bg3)}
+.bar i{display:block;height:4px;background:var(--gold)}
+.banner{margin:8px 12px;padding:10px 12px;background:var(--bg3);border:1px solid var(--gold);border-radius:10px;font-size:14px}
+.photos{display:flex;gap:6px;flex-wrap:wrap}
+.photos img{width:76px;height:76px;object-fit:cover;border-radius:8px}
+.plan{color:var(--mute);font-size:12.5px;margin-top:6px;max-width:560px}
+.gutrow{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.gutrow .big{padding:16px 0;text-align:center}
+details summary{cursor:pointer}
+@media(max-width:480px){.grid2{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header>
+  <span class="syncst" id="syncst">Local only</span>
+  <h1>HomeHunt</h1>
+  <div class="sub">1 BHK shortlist near the Yellow Line, office at BTM Layout metro</div>
+  <span class="count" id="count"></span>
+  <div class="plan" id="plan"></div>
+</header>
+<div id="banner"></div>
+<nav id="nav">
+  <button data-tab="list" class="on">Listings</button>
+  <button data-tab="visits">Visits</button>
+  <button data-tab="compare">Compare</button>
+  <button data-tab="settings">Settings</button>
+</nav>
+<main id="app"></main>
+<button class="fab" id="fab" aria-label="Add listing">+</button>
+<dialog id="dlg"><div class="dlg" id="dlgbody"></div></dialog>
+<dialog id="dlg2"><div class="dlg" id="dlg2body"></div></dialog>
+<div class="vm" id="vm"></div>
+<input type="file" id="gcam" accept="image/*" capture="environment" hidden data-gph="1">
+<input type="file" id="ggal" accept="image/*" multiple hidden data-gph="1">
+
+<script>
+'use strict';
+/* ---------- constants ---------- */
+const LS='homehunt_v1', LSC='homehunt_cfg_v1';
+const STATIONS=['RV Road','Ragigudda','Jayadeva Hospital','BTM Layout','Central Silk Board','Bommanahalli','Hongasandra','Kudlu Gate','Singasandra','Hosa Road','Beratena Agrahara','Electronic City'];
+const HUB=3; // BTM Layout index
+const STATUSES=[['new','New'],['called','Called'],['scheduled','Visit scheduled'],['visited','Visited'],['shortlisted','Shortlisted'],['negotiating','Negotiating'],['taken','Taken by us'],['rejected','Rejected']];
+const SAFETY=[['gated','Gated or guard at entry'],['cctv','CCTV'],['lit','Well lit street'],['transport','Auto or cab available at night'],['singleOk','Owner comfortable with single woman tenant'],['nocurfew','No curfew or visitor rules']];
+const CHECKS=[['water','Water supply timing and pressure ok'],['seep','No seepage or damp patches'],['light','Natural light and ventilation'],['power','Power backup'],['noise','Quiet enough'],['network','Mobile network and wifi ok'],['fixtures','Fans, lights, geyser work'],['kitchen','Kitchen and platform ok'],['bath','Bathroom clean, no leaks'],['furn','Furniture and appliances in good shape'],['parking','Parking or bike space'],['maint','Maintenance and bills clarified'],['lease','Lock-in, notice period, agreement clarified'],['nobrok','No brokerage'],['verif','Police verification or ID process clarified']];
+const AREAS=['BTM Layout','Bommanahalli','JP Nagar','Jayanagar','Koramangala','HSR Layout','Madiwala','Silk Board','Hongasandra','Ragigudda','Jayadeva','Arekere','Bilekahalli','Singasandra','Electronic City'];
+const AREA_STATION={'btm':'BTM Layout','bommanahalli':'Bommanahalli','bommenahalli':'Bommanahalli','silk board':'Central Silk Board','hongasandra':'Hongasandra','ragigudda':'Ragigudda','jp nagar':'Ragigudda','jayadeva':'Jayadeva Hospital','jayanagar':'Jayadeva Hospital','singasandra':'Singasandra','electronic city':'Electronic City','madiwala':'Central Silk Board'};
+const DEF_CFG={rentMin:12000,rentMax:16000,depMin:15000,depMax:40000,moveIn:'2026-10-20',officeWalk:10,
+  w:{commute:25,metro:15,rent:15,deposit:10,furn:10,safety:20,cond:5},deal:['gated','singleOk','water'],user:'',drive:{consent:false},skew:0,sync:{url:'',key:''},lastSync:0};
+const LABEL={};SAFETY.concat(CHECKS).forEach(([k,n])=>LABEL[k]=n);
+const GROUPS=['Outside the building','Meeting the owner','Inside the flat'];
+const VQ=[
+ {k:'gated',g:0,q:'Is there a guard or a gate at the entrance?',h:'Notice how easily a stranger could walk in.'},
+ {k:'lit',g:0,q:'Is the street well lit?',h:'Street lights, open shops and people around all count.'},
+ {k:'transport',g:0,q:'Can you get an auto or cab here easily at night?',h:'Ask a shopkeeper if you are unsure.'},
+ {k:'cctv',g:0,q:'Is there CCTV at the entrance or on the stairs?',h:'It is fine if not. Just note it.'},
+ {k:'singleOk',g:1,q:'Does the owner seem comfortable renting to a woman living here?',h:'Notice how they react. Your instinct counts.'},
+ {k:'nocurfew',g:1,q:'Are there no curfew or visitor rules that would bother you?',h:'Ask directly. Rules that feel restrictive now feel worse later.'},
+ {k:'nobrok',g:1,q:'Is it free of brokerage?',h:'Ask who is charging what, and when.'},
+ {k:'lease',g:1,q:'Are the lock-in, notice period and agreement terms clear?',h:'Ask to see the draft agreement.'},
+ {k:'maint',g:1,q:'Are maintenance and bills clear?',h:'Ask what is included in the rent.'},
+ {k:'verif',g:1,q:'Is the ID or police verification process clear?',h:'Better to know now than at move-in.'},
+ {k:'water',g:2,q:'Does water run through the day with decent pressure?',h:'Open a tap and flush once.'},
+ {k:'seep',g:2,q:'Do the walls and ceiling look dry, with no damp patches?',h:'Look in the corners, the bathroom and behind the door.'},
+ {k:'light',g:2,q:'Is there good natural light and fresh air?',h:'Open a window and stand still for a moment.'},
+ {k:'noise',g:2,q:'Is it quiet enough?',h:'Stand still for a minute and just listen.'},
+ {k:'network',g:2,q:'Does your phone get a good signal inside?',h:'Check calls and data.'},
+ {k:'power',g:2,q:'Is there power backup?',h:'Ask what happens during a power cut.'},
+ {k:'fixtures',g:2,q:'Do the fans, lights and geyser work?',h:'Flip a few switches.'},
+ {k:'kitchen',g:2,q:'Does the kitchen feel usable?',h:'Check the platform, sink and cupboards.'},
+ {k:'bath',g:2,q:'Is the bathroom clean, with no leaks?',h:'Look under the sink and around the taps.'},
+ {k:'furn',g:2,q:'Is the furniture and equipment in decent shape?',h:'Bed, wardrobe and anything that comes with the flat.'},
+ {k:'parking',g:2,q:'Is there somewhere for a bike or car if you need one?',h:'Skip this if you do not need it.'}
+];
+const PAYCK=[['seen','I have seen the place in person'],['owner','I have seen proof that the person is the owner or is authorised'],['agr','I have read the agreement draft, including lock-in, notice and deposit return'],['acct','Any token or deposit goes to the owner\'s own account, not to a stranger or a link'],['pressure','Nobody is pushing me to pay today because someone else is interested']];
+function st(l,k){const v=l.vm&&l.vm[k];if(v)return v;return ((l.safety&&l.safety[k])||(l.cl&&l.cl[k]))?'ok':''}
+
+/* ---------- state ---------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const inr=n=>(n===''||n==null||isNaN(n))?'?':'\u20B9'+Number(n).toLocaleString('en-IN');
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+let db=[],cfg={};
+try{db=JSON.parse(localStorage.getItem(LS)||'[]')}catch(e){db=[]}
+try{cfg=Object.assign({},DEF_CFG,JSON.parse(localStorage.getItem(LSC)||'{}'))}catch(e){cfg=Object.assign({},DEF_CFG)}
+cfg.w=Object.assign({},DEF_CFG.w,cfg.w);cfg.sync=Object.assign({},DEF_CFG.sync,cfg.sync);cfg.drive=Object.assign({consent:false},cfg.drive);if(!cfg.sync.url)cfg.sync.url='https://script.google.com/macros/s/AKfycbxWvDsy-WuZXIqPD-UWRzhJu0oMBTKGyNEEs3YLsf_bwiHVwaEvV-1IwS2OiN6qt9-7/exec';
+const LSE='homehunt_ev_v1';
+let evs=[];try{evs=JSON.parse(localStorage.getItem(LSE)||'[]')}catch(e){evs=[]}
+const memo={};db.forEach(x=>memo[x.id]=x.status);
+const now=()=>Date.now()+(cfg.skew||0);
+function saveEvs(){try{localStorage.setItem(LSE,JSON.stringify(evs))}catch(e){}}
+function logEvent(type,l,meta){evs.push({id:uid(),t:now(),user:cfg.user||'',type:type,lid:l?l.id:'',title:l?(l.title||''):'',meta:meta||{},sent:0});if(evs.length>5000)evs=evs.slice(-5000);saveEvs()}
+const ui={tab:'list',filter:'active',q:'',sort:'score',day:nextSaturday(),cmp:[],pos:null,dis:[],wid:null,mt:'',skewWarned:0};
+function persist(){try{localStorage.setItem(LS,JSON.stringify(db));localStorage.setItem(LSC,JSON.stringify(cfg))}catch(e){toast('Phone storage is full. Export a backup in Settings and free some space.')}}
+function ymd(d){const z=n=>String(n).padStart(2,'0');return d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate())}
+function nextSaturday(){const d=new Date();d.setDate(d.getDate()+((6-d.getDay()+7)%7));return ymd(d)}
+function toast(t){const e=document.createElement('div');e.className='toast';e.textContent=t;(document.querySelector('dialog[open]')||document.body).appendChild(e);setTimeout(()=>e.remove(),2800)}
+let syncTimer=null;
+function touch(l){
+  l.updatedAt=now();try{l.score=score(l)}catch(e){}
+  if(memo[l.id]!==l.status){logEvent('status',l,{from:memo[l.id]||'',to:l.status,visitAt:l.visitAt||'',reason:l.rejectReason||'',source:l.source||'',area:l.area||''});memo[l.id]=l.status}
+  persist();clearTimeout(syncTimer);if(cfg.sync.url&&cfg.sync.key&&cfg.drive.consent)syncTimer=setTimeout(syncNow,1500);
+}
+
+/* ---------- scoring ---------- */
+function stIdx(l){return STATIONS.indexOf(l.station)}
+function commuteMin(l){
+  if(l.commute!==''&&l.commute!=null&&!isNaN(l.commute))return +l.commute;
+  const i=stIdx(l);if(i<0)return null;
+  return Math.round((+l.feeder||0)+3+Math.abs(i-HUB)*2.5+(+cfg.officeWalk||0));
+}
+function scoreParts(l){
+  const cm=commuteMin(l),i=stIdx(l);
+  const fd=(l.feeder===''||l.feeder==null||isNaN(l.feeder))?null:+l.feeder;
+  const rent=+l.rent,dep=+l.deposit;
+  const sc={};
+  sc.commute=cm==null?.4:clamp((50-cm)/35,0,1);
+  sc.metro=fd==null?(i>=0?.5:.3):clamp((25-fd)/20,0,1);
+  sc.rent=!rent?.5:rent<=cfg.rentMin?1:rent>cfg.rentMax?0:1-(rent-cfg.rentMin)/(cfg.rentMax-cfg.rentMin)*.6;
+  sc.deposit=!dep?.5:dep<=cfg.depMin?1:dep>cfg.depMax?0:1-(dep-cfg.depMin)/(cfg.depMax-cfg.depMin)*.6;
+  sc.furn=l.furnishing==='furnished'?1:l.furnishing==='semi'?.7:0;
+  const s=SAFETY.filter(([k])=>l.safety&&l.safety[k]).length;sc.safety=s/SAFETY.length;
+  const c=CHECKS.filter(([k])=>l.cl&&l.cl[k]).length;sc.cond=c?c/CHECKS.length:.5;
+  return sc;
+}
+function score(l){
+  const sc=scoreParts(l),w=cfg.w;let t=0,n=0;
+  for(const k in w){t+=w[k]*sc[k];n+=w[k]}
+  return n?Math.round(t/n*100):0;
+}
+function flags(l){
+  const f=[];
+  if(+l.rent>cfg.rentMax)f.push('Rent above budget');
+  if(+l.deposit>cfg.depMax)f.push('Deposit above cap');
+  if(l.availFrom&&l.availFrom>cfg.moveIn)f.push('Available after '+l.availFrom);
+  if(l.furnishing==='unfurnished')f.push('Unfurnished');
+  if(l.station===''&&!(l.commute>0))f.push('No metro or commute info');
+  (cfg.deal||[]).forEach(k=>{const s=st(l,k);
+    if(s==='concern')f.push('Must-have worry: '+(LABEL[k]||k));
+    else if(['visited','shortlisted','negotiating','taken'].includes(l.status)&&s!=='ok')f.push('Must-have not confirmed: '+(LABEL[k]||k))});
+  return f;
+}
+
+/* ---------- parsing pasted text ---------- */
+function money(str){
+  if(!str)return '';
+  const m=String(str).replace(/,/g,'').toLowerCase().match(/([\d.]+)\s*(k|l|lakh|lac)?/);
+  if(!m)return '';let v=parseFloat(m[1]);if(isNaN(v))return '';
+  if(m[2]==='k')v*=1000;else if(m[2])v*=100000;
+  return Math.round(v);
+}
+function parsePaste(t){
+  const o={};const lo=t.toLowerCase();
+  const u=t.match(/https?:\/\/[^\s)]+/);if(u)o.url=u[0];
+  const p=t.match(/(?:\+?91[\s-]?)?([6-9]\d{4})[\s-]?(\d{5})(?!\d)/);if(p)o.phone=p[1]+p[2];
+  let r=t.match(/rent[^\d\u20B9]{0,20}(?:\u20B9|rs\.?|inr)?\s*([\d,]+(?:\.\d+)?\s*k?)/i);
+  if(!r)r=t.match(/(?:\u20B9|rs\.?)\s*([\d,]+(?:\.\d+)?\s*k?)/i);
+  if(!r){const k=t.match(/\b(\d{2}(?:\.\d)?)\s*k\b/i);if(k)r=[0,k[1]+'k'];}
+  if(r){const v=money(r[1]);if(v>=3000&&v<=100000)o.rent=v;}
+  const dm=t.match(/(?:deposit|advance)[^\d]{0,15}(\d)\s*months?/i);
+  if(dm&&o.rent)o.deposit=+dm[1]*o.rent;
+  else{const d=t.match(/(?:deposit|advance)[^\d\u20B9]{0,20}(?:\u20B9|rs\.?|inr)?\s*([\d,]+(?:\.\d+)?\s*(?:k|lakh|lac|l)?)/i);if(d){const v=money(d[1]);if(v>=1000)o.deposit=v;}}
+  if(/semi[\s-]?furnish/.test(lo))o.furnishing='semi';
+  else if(/un[\s-]?furnish/.test(lo))o.furnishing='unfurnished';
+  else if(/furnish/.test(lo))o.furnishing='furnished';
+  for(const a of AREAS){if(lo.includes(a.toLowerCase())){o.area=a;break}}
+  if(!o.area&&/\bbtm\b/.test(lo))o.area='BTM Layout';
+  if(o.area){const key=Object.keys(AREA_STATION).find(k=>o.area.toLowerCase().includes(k));if(key)o.station=AREA_STATION[key]}
+  const host=(o.url||'').toLowerCase();
+  o.source=/instagram/.test(host)?'Instagram':/nobroker/.test(host)?'NoBroker':/rently/.test(host)?'Rently':/magicbricks/.test(host)?'MagicBricks':/99acres/.test(host)?'99acres':/housing/.test(host)?'Housing.com':/olx/.test(host)?'OLX':/facebook|fb\.com/.test(host)?'Facebook':'WhatsApp or other';
+  const first=t.split('\n').map(s=>s.trim()).filter(s=>s&&!/^https?:/i.test(s))[0]||'1 BHK';
+  o.title=first.slice(0,70);
+  o.notes=t.length<600?t.trim():t.trim().slice(0,600);
+  return o;
+}
+
+/* ---------- model ---------- */
+function blank(){return{id:uid(),title:'',source:'',url:'',area:'',address:'',rent:'',deposit:'',furnishing:'semi',availFrom:'',floor:'',contactName:'',phone:'',station:'',feeder:'',commute:'',safety:{},cl:{},status:'new',notes:'',calls:[],visitAt:'',lat:'',lng:'',vm:{},gut:'',evening:false,pay:{},createdAt:Date.now(),updatedAt:Date.now(),deleted:false}}
+function get(id){return db.find(x=>x.id===id)}
+function visible(){
+  let a=db.filter(l=>!l.deleted);
+  if(ui.filter==='active')a=a.filter(l=>l.status!=='rejected');
+  else if(ui.filter!=='all')a=a.filter(l=>l.status===ui.filter);
+  if(ui.q){const q=ui.q.toLowerCase();a=a.filter(l=>[l.title,l.area,l.notes,l.address,l.source].join(' ').toLowerCase().includes(q))}
+  const s=ui.sort;
+  a.sort((x,y)=>s==='score'?score(y)-score(x):s==='rent'?(+x.rent||9e9)-(+y.rent||9e9):s==='commute'?(commuteMin(x)==null?999:commuteMin(x))-(commuteMin(y)==null?999:commuteMin(y)):y.createdAt-x.createdAt);
+  return a;
+}
+function phone10(p){return String(p||'').replace(/\D/g,'').slice(-10)}
+
+/* ---------- render ---------- */
+function render(){
+  const d=Math.ceil((new Date(cfg.moveIn+'T00:00:00')-new Date(new Date().toDateString()))/864e5);
+  $('#count').textContent=d>0?d+' days until '+addDays(cfg.moveIn,0):d===0?'Move-in is today':'Move-in date has passed';
+  $('#plan').textContent=d>=8?'A gentle plan: shortlist by '+addDays(cfg.moveIn,-8)+', decide by '+addDays(cfg.moveIn,-5)+', and keep the last 5 days for paperwork and moving.':d>0?'The date is close. If it slips, a short furnished stay for a week or two can give you room to choose well.':'';
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.tab===ui.tab));
+  $('#fab').style.display=ui.tab==='settings'?'none':'block';
+  $('#app').innerHTML=({list:vList,visits:vVisits,compare:vCompare,settings:vSettings})[ui.tab]();
+  renderBanner();showSync();
+}
+function card(l){
+  const f=flags(l),cm=commuteMin(l),sc=score(l);
+  const ph=phone10(l.phone);
+  return `<div class="card" data-id="${l.id}">
+    ${scoreBadge(l,sc)}
+    <h3>${esc(l.title||'Untitled')}</h3>
+    <div class="meta">${esc(l.area||'Area?')} | ${esc(l.source||'Source?')} | ${l.furnishing==='semi'?'Semi furnished':l.furnishing==='furnished'?'Fully furnished':'Unfurnished'}${l.floor?' | Floor '+esc(l.floor):''}</div>
+    <div class="price">${inr(l.rent)} / month, deposit ${inr(l.deposit)}</div>
+    <div class="meta">${l.station?'Yellow line: '+esc(l.station):'Station not set'}${l.feeder!==''&&l.feeder!=null?' ('+l.feeder+' min to station)':''}${cm!=null?' | ~'+cm+' min to office':''}</div>
+    ${l.visitAt?`<div class="meta">Visit: ${esc(l.visitAt.replace('T',' '))}</div>`:''}
+    ${(l.media||[]).length?`<div class="meta">${(l.media||[]).filter(m=>m.kind==='photo').length} photo(s), ${(l.media||[]).filter(m=>m.kind==='voice').length} voice note(s)</div>`:''}
+    <div>${f.map(x=>`<span class="flag">${esc(x)}</span>`).join('')}${SAFETY.filter(([k])=>l.safety&&l.safety[k]).length>=5?'<span class="flag good">Safety checks mostly ticked</span>':''}</div>
+    ${(l.calls||[]).slice(-2).map(c=>`<div class="call">${esc(c.t)}: ${esc(c.txt)}</div>`).join('')}
+    <div class="actions">
+      <select data-act="status" style="width:auto">${STATUSES.map(([k,n])=>`<option value="${k}" ${l.status===k?'selected':''}>${n}</option>`).join('')}</select>
+      ${ph?`<a class="btn sm" href="tel:+91${ph}">Call</a><a class="btn sm" target="_blank" rel="noopener" href="https://wa.me/91${ph}">WhatsApp</a>`:''}
+      ${l.url?`<a class="btn sm" target="_blank" rel="noopener" href="${esc(l.url)}">Listing</a>`:''}
+      <button class="btn sm" data-act="cam">Photo</button><button class="btn sm" data-act="rec">Voice</button><button class="btn sm" data-act="calllog">Log call</button>${['rejected','taken'].includes(l.status)?'':'<button class="btn sm" data-act="vmstart">Visit mode</button>'}
+      <button class="btn sm gold" data-act="edit">Open</button>
+    </div></div>`;
+}
+function vList(){
+  const counts={};db.filter(l=>!l.deleted).forEach(l=>counts[l.status]=(counts[l.status]||0)+1);
+  const chips=[['active','Active'],...STATUSES.map(([k,n])=>[k,n+' '+(counts[k]||0)]),['all','All']];
+  const a=visible();
+  return `<div class="chips">${chips.map(([k,n])=>`<button class="chip ${ui.filter===k?'on':''}" data-act="filter" data-v="${k}">${esc(n)}</button>`).join('')}</div>
+  <div class="row"><input id="q" placeholder="Search area, notes, source" value="${esc(ui.q)}" style="flex:2;min-width:150px">
+  <select id="sort" style="flex:1;min-width:120px"><option value="score" ${ui.sort==='score'?'selected':''}>Best score</option><option value="commute" ${ui.sort==='commute'?'selected':''}>Shortest commute</option><option value="rent" ${ui.sort==='rent'?'selected':''}>Lowest rent</option><option value="new" ${ui.sort==='new'?'selected':''}>Newest</option></select></div>
+  ${a.length?a.map(card).join(''):`<div class="empty">No listings here yet.<br>Tap + and paste an Instagram, NoBroker or WhatsApp listing to add it.</div>`}${vFind()}`;
+}
+
+/* ---------- visits ---------- */
+function dayList(){return db.filter(l=>!l.deleted&&l.status!=='rejected'&&(l.visitAt||'').slice(0,10)===ui.day).sort((a,b)=>a.visitAt.localeCompare(b.visitAt))}
+function addrOf(l){return l.address||(l.lat!==''&&l.lat!=null&&l.lng!==''&&l.lng!=null?l.lat+','+l.lng:(l.title||'')+' '+(l.area||'')+' Bengaluru')}
+function mapsRoute(a){
+  if(!a.length)return '';
+  const stops=a.map(l=>encodeURIComponent(addrOf(l)));
+  const dest=stops[stops.length-1],wp=stops.slice(0,-1).join('%7C');
+  return 'https://www.google.com/maps/dir/?api=1&travelmode=driving&destination='+dest+(wp?'&waypoints='+wp:'');
+}
+function waMsg(l){
+  const dt=l.visitAt?new Date(l.visitAt):null;
+  const when=dt?dt.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'})+' at '+dt.toLocaleTimeString('en-IN',{hour:'numeric',minute:'2-digit'}):'[date and time]';
+  return `Hello, I am interested in the 1 BHK${l.area?' in '+l.area:''}${l.url?' ('+l.url+')':''}. Is it still available? I would like to visit on ${when}. Could you please share the exact location pin and confirm rent ${inr(l.rent)}, deposit ${inr(l.deposit)}${l.availFrom?' and availability from '+l.availFrom:''}? Thank you.`;
+}
+function vVisits(){
+  const a=dayList();
+  const cand=db.filter(l=>!l.deleted&&['new','called','shortlisted','scheduled','visited'].includes(l.status)&&(l.visitAt||'').slice(0,10)!==ui.day).sort((x,y)=>score(y)-score(x));
+  const dayLabel=new Date(ui.day+'T00:00:00').toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'});
+  return `<div class="row"><div style="flex:1"><label>Visit day</label><input type="date" id="vday" value="${ui.day}"></div>
+  <div style="flex:1"><label>First visit at</label><input type="time" id="vstart" value="10:00"></div>
+  <div style="flex:1"><label>Minutes per stop</label><input type="number" id="vgap" value="60" min="20" step="5"></div></div>
+  <h2 class="sec">${esc(dayLabel)}: ${a.length} stop${a.length===1?'':'s'}</h2>
+  <div class="actions"><button class="btn sm ${ui.wid!=null?'gold':''}" data-act="watch">${ui.wid!=null?'Nearby prompts are on':'Prompt me when I am near a stop'}</button></div>
+  <div class="meta">Works while this page is open. Add a map pin to a listing for location prompts. Without a pin you get a time-based reminder.</div>
+  ${a.length?`<div class="actions"><button class="btn gold" data-act="autoorder">Auto-order by metro and assign times</button>
+  <a class="btn" target="_blank" rel="noopener" href="${mapsRoute(a)}">Open route in Maps</a><button class="btn" data-act="copyplan">Copy day plan</button></div>`:''}
+  ${a.map((l,i)=>`<div class="card stop" data-id="${l.id}"><h3>${i+1}. ${esc(l.title||'Untitled')}</h3>
+   <div class="meta">${esc(l.area)} | ${esc(l.visitAt.slice(11))} | ${inr(l.rent)} | ${esc(l.contactName||'')} ${esc(l.phone||'')}</div>
+   <div class="actions"><input type="time" data-act="vtime" value="${esc(l.visitAt.slice(11))}" style="width:auto">
+   ${phone10(l.phone)?`<a class="btn sm" target="_blank" rel="noopener" href="https://wa.me/91${phone10(l.phone)}?text=${encodeURIComponent(waMsg(l))}">WhatsApp to confirm</a><a class="btn sm" href="tel:+91${phone10(l.phone)}">Call</a>`:'<span class="meta">Add phone to message owner</span>'}
+   <a class="btn sm" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addrOf(l))}">Map</a>
+   <button class="btn sm" data-act="visited">Mark visited</button><button class="btn sm red" data-act="unsched">Remove</button></div></div>`).join('')||'<div class="empty">Nothing scheduled for this day.</div>'}
+  <h2 class="sec">Add to this day</h2>
+  ${cand.map(l=>`<div class="card" data-id="${l.id}"><b>${esc(l.title||'Untitled')}</b> <span class="meta">${esc(l.area)} | ${inr(l.rent)} | score ${score(l)}${l.visitAt?' | now '+esc(l.visitAt.replace('T',' ')):''}</span>
+   <div class="actions"><button class="btn sm gold" data-act="addday">Add</button></div></div>`).join('')||'<div class="empty">No more candidates. Add listings first.</div>'}`;
+}
+
+/* ---------- compare ---------- */
+function vCompare(){
+  const all=db.filter(l=>!l.deleted&&l.status!=='rejected').sort((a,b)=>score(b)-score(a));
+  const sel=ui.cmp.map(get).filter(Boolean);
+  const rows=[['Score',l=>score(l)],['Gut feel',l=>l.gut?l.gut+'/5':'-'],['Rent',l=>inr(l.rent)],['Deposit',l=>inr(l.deposit)],['Furnishing',l=>l.furnishing],['Area',l=>l.area],['Yellow line station',l=>l.station||'-'],['Min to station',l=>l.feeder===''?'-':l.feeder],['Est. min to office',l=>commuteMin(l)==null?'-':commuteMin(l)],['Safety ticks',l=>SAFETY.filter(([k])=>l.safety&&l.safety[k]).length+'/'+SAFETY.length],['Visit checks',l=>CHECKS.filter(([k])=>l.cl&&l.cl[k]).length+'/'+CHECKS.length],['Available from',l=>l.availFrom||'-'],['Status',l=>(STATUSES.find(s=>s[0]===l.status)||[])[1]],['Flags',l=>flags(l).join(', ')||'None'],['Notes',l=>(l.notes||'').slice(0,120)]];
+  return `<div class="meta">Pick up to 4 listings.</div>
+  <div class="chips" style="flex-wrap:wrap">${all.map(l=>`<button class="chip ${ui.cmp.includes(l.id)?'on':''}" data-act="cmp" data-v="${l.id}">${esc((l.title||'Untitled').slice(0,28))}</button>`).join('')||'<div class="empty">No listings yet.</div>'}</div>
+  ${sel.length?`<div class="scroll"><table><tr><th></th>${sel.map(l=>`<th>${esc((l.title||'Untitled').slice(0,24))}</th>`).join('')}</tr>${rows.map(([n,f])=>`<tr><td>${n}</td>${sel.map(l=>`<td>${esc(f(l))}</td>`).join('')}</tr>`).join('')}</table></div>`:''}`;
+}
+
+/* ---------- settings ---------- */
+function vSettings(){
+  const w=cfg.w;
+  return `<h2 class="sec">You and sharing</h2>
+  <label>Your first name</label><input id="c_user" value="${esc(cfg.user)}" placeholder="First name">
+  <div class="meta" style="margin-top:8px">${cfg.drive.consent?'Sharing is on. Listing details, notes, photos and voice notes are saved to the admin\'s Google Drive. Anything marked Phone only stays here.':'Sharing is off. Everything stays on this phone.'}</div>
+  <div class="actions">${cfg.drive.consent?'<button class="btn" data-act="shareoff">Turn sharing off</button>':'<button class="btn gold" data-act="shareon">Turn sharing on</button>'}<button class="btn" data-act="testup">Test Drive upload</button><button class="btn" data-act="pumpnow">Upload waiting files</button></div>
+  <div class="meta">${pendingCount()} file(s) waiting, ${failedCount()} failed</div>
+  <h2 class="sec">Budget and dates</h2>
+  <div class="grid2"><div><label>Rent min</label><input type="number" id="c_rentMin" value="${cfg.rentMin}"></div><div><label>Rent max</label><input type="number" id="c_rentMax" value="${cfg.rentMax}"></div>
+  <div><label>Deposit min</label><input type="number" id="c_depMin" value="${cfg.depMin}"></div><div><label>Deposit max</label><input type="number" id="c_depMax" value="${cfg.depMax}"></div>
+  <div><label>Move-in date</label><input type="date" id="c_moveIn" value="${cfg.moveIn}"></div><div><label>Walk from BTM Layout station to office (min)</label><input type="number" id="c_officeWalk" value="${cfg.officeWalk}"></div></div>
+  <h2 class="sec">Score weights</h2>
+  ${Object.keys(w).map(k=>`<label>${({commute:'Commute to office',metro:'Distance to metro',rent:'Rent fit',deposit:'Deposit fit',furn:'Furnishing',safety:'Safety and comfort',cond:'Condition after visit'})[k]}: <span id="wv_${k}">${w[k]}</span></label><input type="range" min="0" max="40" value="${w[k]}" data-act="weight" data-k="${k}">`).join('')}
+  <h2 class="sec">Your three must-haves</h2>
+  <div class="meta">Choose these now, while you are calm. A listing that worries you on one of them gets flagged, so you do not have to argue with yourself on the spot.</div>
+  ${[0,1,2].map(i=>`<select id="c_d${i}" style="margin-top:6px">${SAFETY.concat(CHECKS).map(([k,n])=>`<option value="${k}" ${(cfg.deal||[])[i]===k?'selected':''}>${n}</option>`).join('')}</select>`).join('')}
+  <h2 class="sec">Shared sync (Google Sheet)</h2>
+  <div class="meta">Paste the Apps Script web app URL and the shared key so both of you see the same list.</div>
+  <label>Web app URL</label><input id="c_url" value="${esc(cfg.sync.url)}" placeholder="https://script.google.com/macros/s/.../exec">
+  <label>Shared key</label><input id="c_key" value="${esc(cfg.sync.key)}" placeholder="same key as in Code.gs">
+  <div class="actions"><button class="btn gold" data-act="savecfg">Save settings</button><button class="btn" data-act="syncnow">Sync now</button></div>
+  <h2 class="sec">Backup</h2>
+  <div class="actions"><button class="btn" data-act="export">Export JSON</button><label class="btn" style="margin:0">Import JSON<input type="file" id="imp" accept=".json" hidden></label></div>`;
+}
+
+/* ---------- edit dialog ---------- */
+function fld(n,label,val,type,extra){return `<div><label>${label}</label><input name="${n}" type="${type||'text'}" value="${esc(val)}" ${extra||''}></div>`}
+function openEdit(id,prefill){
+  const l=id?get(id):Object.assign(blank(),prefill||{});
+  const isNew=!id;
+  $('#dlgbody').innerHTML=`<form id="f" data-id="${l.id}" data-new="${isNew?1:0}">
+  <h2>${isNew?'Add listing':'Edit listing'}</h2>
+  ${isNew?`<label>Paste listing text or link (rent, deposit, phone, area get filled in)</label><textarea id="paste" placeholder="Paste caption or message here"></textarea><button type="button" class="btn sm" data-act="parse" style="margin-top:6px">Fill from text</button>`:''}
+  <div class="grid2" style="margin-top:6px">
+  ${fld('title','Title',l.title)}${fld('source','Source (Instagram, NoBroker...)',l.source)}
+  ${fld('area','Area',l.area,'text','list="arealist"')}${fld('floor','Floor',l.floor)}
+  ${fld('rent','Rent per month',l.rent,'number')}${fld('deposit','Deposit',l.deposit,'number')}
+  <div><label>Furnishing</label><select name="furnishing">${[['furnished','Fully furnished'],['semi','Semi furnished'],['unfurnished','Unfurnished']].map(([k,n])=>`<option value="${k}" ${l.furnishing===k?'selected':''}>${n}</option>`).join('')}</select></div>
+  ${fld('availFrom','Available from',l.availFrom,'date')}
+  ${fld('contactName','Owner or contact name',l.contactName)}${fld('phone','Phone',l.phone,'tel')}
+  <div><label>Nearest Yellow Line station</label><select name="station"><option value="">None or not sure</option>${STATIONS.map(s=>`<option ${l.station===s?'selected':''}>${s}</option>`).join('')}</select></div>
+  ${fld('feeder','Minutes to that station (walk or auto)',l.feeder,'number')}
+  ${fld('commute','Door to office minutes (optional override)',l.commute,'number')}
+  <div><label>Visit date and time</label><input name="visitAt" type="datetime-local" value="${esc(l.visitAt)}"></div>
+  </div>
+  <datalist id="arealist">${AREAS.map(a=>`<option>${a}</option>`).join('')}</datalist>
+  ${fld('url','Listing link',l.url,'url')}${fld('address','Address or landmark for Maps',l.address)}
+  ${fld('pin',"Map pin: paste 'lat, lng' or a long Google Maps link",l.lat!==''&&l.lat!=null?l.lat+', '+l.lng:'')}
+  <label>Notes</label><textarea name="notes">${esc(l.notes)}</textarea>
+  <div class="sec">Safety and comfort</div><div class="checks">${SAFETY.map(([k,n])=>`<label><input type="checkbox" name="s_${k}" ${l.safety&&l.safety[k]?'checked':''}>${n}</label>`).join('')}</div>
+  <div class="sec">Visit checklist</div><div class="checks">${CHECKS.map(([k,n])=>`<label><input type="checkbox" name="c_${k}" ${l.cl&&l.cl[k]?'checked':''}>${n}</label>`).join('')}</div>
+  <div class="sec">Photos and voice notes</div>
+  ${isNew?'<div class="meta">Save the listing first, then add photos and voice notes.</div>':'<div class="actions"><button type="button" class="btn gold" data-act="cam">Take photo</button><button type="button" class="btn" data-act="gal">From gallery</button><button type="button" class="btn" data-act="rec">Voice note</button></div><div id="mediabox" style="margin-top:8px"></div>'}
+  ${(l.calls||[]).length?`<div class="sec">Call log</div>${l.calls.map(c=>`<div class="call">${esc(c.t)}: ${esc(c.txt)}</div>`).join('')}`:''}
+  <div class="actions" style="margin-top:16px"><button class="btn gold" type="submit">Save</button><button class="btn" type="button" data-act="closedlg">Cancel</button>${isNew?'':'<button class="btn red" type="button" data-act="delete">Delete</button>'}</div>
+  </form>`;
+  $('#dlg').showModal();
+  if(!isNew)loadMediaBox(l.id);
+}
+function saveForm(form){
+  const fd=new FormData(form),id=form.dataset.id;
+  let l=get(id);const isNew=!l;if(isNew)l=blank(),l.id=id;
+  ['title','source','area','floor','rent','deposit','furnishing','availFrom','contactName','phone','station','feeder','commute','visitAt','url','address','notes'].forEach(k=>l[k]=(fd.get(k)||'').toString().trim());
+  if(!l.title&&!l.area&&!l.url&&!l.phone){toast('Add a title, area, link or phone so you can find it later');return}
+  const pin=(fd.get('pin')||'').toString();
+  if(pin.trim()){const m=pin.match(/(-?\d{1,2}\.\d{3,})\s*,\s*(-?\d{2,3}\.\d{3,})/);if(m){l.lat=+m[1];l.lng=+m[2]}}else{l.lat='';l.lng=''}
+  l.safety={};SAFETY.forEach(([k])=>l.safety[k]=fd.get('s_'+k)==='on');
+  l.cl={};CHECKS.forEach(([k])=>l.cl[k]=fd.get('c_'+k)==='on');
+  l.vm=l.vm||{};SAFETY.concat(CHECKS).forEach(([k])=>{const b=!!((l.safety&&l.safety[k])||(l.cl&&l.cl[k]));if(b)l.vm[k]='ok';else if(l.vm[k]==='ok')delete l.vm[k]});
+  if(l.visitAt&&l.status==='new')l.status='scheduled';
+  if(l.visitAt&&(l.status==='called'))l.status='scheduled';
+  if(l.phone&&phone10(l.phone).length!==10&&!confirm('The phone number does not look like 10 digits. Save anyway?'))return;
+  if(+l.rent&&(+l.rent<3000||+l.rent>100000)&&!confirm('Rent shows as '+inr(l.rent)+'. Save anyway?'))return;
+  if(isNew){
+    const ph=phone10(l.phone);
+    const dup=db.find(x=>!x.deleted&&x.id!==l.id&&((ph&&phone10(x.phone)===ph)||(l.url&&x.url===l.url)));
+    if(dup&&!confirm('This looks like "'+(dup.title||'a listing')+'" that you already added. Add it again?'))return;
+    db.push(l);
+  }
+  touch(l);$('#dlg').close();render();toast('Saved');
+}
+
+/* ---------- sync ---------- */
+let syncMsg='Local only';
+function pendingCount(){return db.reduce((n,l)=>n+(l.media||[]).filter(m=>m.state==='queued').length,0)}
+function failedCount(){return db.reduce((n,l)=>n+(l.media||[]).filter(m=>m.state==='failed').length,0)}
+function showSync(){const q=pendingCount(),f=failedCount();const el=$('#syncst');if(el)el.textContent=syncMsg+(q?' | '+q+' file'+(q>1?'s':'')+' waiting':'')+(f?' | '+f+' failed':'')}
+function setSync(t){syncMsg=t;showSync()}
+async function api(params){
+  const u=new URL(cfg.sync.url);
+  Object.entries(params).forEach(([k,v])=>u.searchParams.set(k,v));
+  u.searchParams.set('key',cfg.sync.key);
+  const r=await fetch(u.toString());const j=await r.json();
+  if(!j.ok)throw new Error(j.error||'sync failed');return j;
+}
+async function pushChunk(kind,obj){
+  const s=encodeURIComponent(JSON.stringify(obj));const size=1200;const parts=[];let i=0;
+  while(i<s.length){let e=Math.min(s.length,i+size);if(e<s.length){if(s[e-1]==='%')e-=1;else if(s[e-2]==='%')e-=2}parts.push(s.slice(i,e));i=e}
+  const tid=uid();
+  for(let n=0;n<parts.length;n++)await api({action:'chunk',kind:kind,tid:tid,i:n,n:parts.length,d:parts[n]});
+}
+const pushOne=l=>pushChunk('item',l);
+async function flushEvents(){
+  const un=evs.filter(e=>!e.sent);
+  for(let i=0;i<un.length;i+=15){
+    const b=un.slice(i,i+15);
+    await pushChunk('events',b.map(e=>({id:e.id,t:e.t,user:e.user,type:e.type,lid:e.lid,title:e.title,meta:e.meta})));
+    b.forEach(e=>e.sent=1);saveEvs();
+  }
+}
+let syncing=false;
+async function syncNow(){
+  if(!cfg.sync.url||!cfg.sync.key){toast('Add the Apps Script URL and key in Settings');return}
+  if(!cfg.drive.consent){openConsent();return}
+  if(!navigator.onLine){setSync('Offline, will retry');return}
+  if(syncing)return;syncing=true;setSync('Syncing...');
+  try{
+    const lst=await api({action:'list'});const items=lst.items;
+    if(lst.serverNow){cfg.skew=lst.serverNow-Date.now();if(Math.abs(cfg.skew)>120000&&!ui.skewWarned){ui.skewWarned=1;toast('This phone clock is off by about '+Math.round(Math.abs(cfg.skew)/60000)+' minutes. HomeHunt is correcting for it.')}}
+    const remote=new Map(items.map(x=>[x.id,x]));const merged=new Map(db.map(x=>[x.id,x]));
+    let pulled=0,pushed=0;
+    for(const r of items){const m=merged.get(r.id);if(!m||(r.updatedAt||0)>(m.updatedAt||0)){merged.set(r.id,r);pulled++}}
+    for(const l of merged.values()){const r=remote.get(l.id);if(!r||(l.updatedAt||0)>(r.updatedAt||0)){await pushOne(l);pushed++}}
+    db=[...merged.values()];db.forEach(x=>memo[x.id]=x.status);cfg.lastSync=Date.now();persist();
+    setSync('Synced '+new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})+' (in '+pulled+', out '+pushed+')');
+    try{await flushEvents()}catch(e){}
+    if(!$('#dlg').open&&!vmS)render();
+    pump();
+  }catch(e){const off=!navigator.onLine||e instanceof TypeError;setSync(off?'Offline, will retry':'Sync failed');if(!off)toast('Sync failed: '+(e.message==='bad key'?'wrong key. Check Settings.':e.message))}
+  syncing=false;
+}
+
+/* ---------- calm helpers and visit mode ---------- */
+function addDays(s,n){const d=new Date(s+'T00:00:00');d.setDate(d.getDate()+n);return d.toLocaleDateString('en-IN',{day:'numeric',month:'short'})}
+function dist(a,b){const r=Math.PI/180,dl=(b.lat-a.lat)*r,dn=(b.lng-a.lng)*r;const x=Math.sin(dl/2)**2+Math.cos(a.lat*r)*Math.cos(b.lat*r)*Math.sin(dn/2)**2;return 12742000*Math.asin(Math.sqrt(x))}
+function hasPin(l){return l.lat!==''&&l.lat!=null&&l.lng!==''&&l.lng!=null&&!isNaN(l.lat)&&!isNaN(l.lng)}
+function scoreBadge(l,sc){
+  if(l.status==='visited'&&!l.gut)return '<button class="btn sm gold" style="float:right" data-act="gut">How did it feel?</button>';
+  return '<span class="score" title="Weighted fit score">'+sc+'</span>'+(l.gut?'<span class="meta" style="float:right;margin:6px 8px 0 0">gut '+l.gut+'/5</span>':'');
+}
+function vFind(){
+  const sites=['nobroker.in','99acres.com','magicbricks.com','housing.com','instagram.com'];
+  const direct={'BTM Layout':'https://www.nobroker.in/1bhk-flats-for-rent-in-btm_layout_bangalore','Bommanahalli':'https://www.nobroker.in/1bhk-flats-for-rent-in-bommanahalli_bangalore','JP Nagar':'https://www.nobroker.in/properties-for-rent-in-j-p-nagar-bangalore','Jayanagar':'https://www.nobroker.in/1-bhk-house-for-rent-in-jayanagar-bangalore'};
+  const areas=['BTM Layout','Bommanahalli','JP Nagar','Jayanagar','Koramangala'];
+  const g=(a,s)=>'https://www.google.com/search?q='+encodeURIComponent('site:'+s+' 1 BHK semi furnished rent '+a+' Bangalore');
+  return '<details class="card"><summary><b>Where to look</b></summary><div class="meta" style="margin:8px 0">Check the post date, since owners often leave rented flats up. Copy a listing, then tap + to add it.</div>'+
+    areas.map(a=>'<div style="margin:8px 0"><b>'+a+'</b><div class="actions">'+(direct[a]?'<a class="btn sm" target="_blank" rel="noopener" href="'+direct[a]+'">NoBroker page</a>':'')+sites.map(s=>'<a class="btn sm" target="_blank" rel="noopener" href="'+g(a,s)+'">'+s.split('.')[0]+'</a>').join('')+'</div></div>').join('')+'</details>';
+}
+function renderBanner(){
+  const el=$('#banner');if(!el)return;
+  if(vmS){el.innerHTML='';return}
+  const today=ymd(new Date()),now=Date.now();
+  const todays=db.filter(l=>!l.deleted&&l.status!=='rejected'&&l.status!=='visited'&&(l.visitAt||'').slice(0,10)===today&&!ui.dis.includes(l.id));
+  let msg='',id='';
+  if(ui.pos){const n=todays.find(l=>hasPin(l)&&dist(ui.pos,{lat:+l.lat,lng:+l.lng})<250);if(n){id=n.id;msg='You seem to be near '+(n.title||'this place')+'. Open the walkthrough when you are ready.'}}
+  if(!id){const n=todays.find(l=>{const t=new Date(l.visitAt).getTime();return now>t-15*60000&&now<t+45*60000});if(n){id=n.id;msg='Visit at '+n.visitAt.slice(11)+': '+(n.title||'this place')+'. Open the walkthrough when you arrive. No rush.'}}
+  el.innerHTML=id?'<div class="banner" data-id="'+id+'">'+esc(msg)+'<div class="actions"><button class="btn sm gold" data-act="vmstart">Start visit</button><button class="btn sm" data-act="dismiss">Not now</button></div></div>':'';
+}
+function toggleWatch(){
+  if(!navigator.geolocation){toast('Location is not available on this device');return}
+  if(ui.wid!=null){navigator.geolocation.clearWatch(ui.wid);ui.wid=null;ui.pos=null;toast('Nearby prompts off');render();return}
+  ui.wid=navigator.geolocation.watchPosition(p=>{ui.pos={lat:p.coords.latitude,lng:p.coords.longitude};renderBanner()},()=>{toast('Location is off. Time-based reminders still work.');ui.wid=null;render()},{enableHighAccuracy:true,maximumAge:30000});
+  toast('Nearby prompts are on while this page is open');render();
+}
+function pinHere(l,cb){
+  if(!navigator.geolocation){toast('Location is not available');return}
+  navigator.geolocation.getCurrentPosition(p=>{l.lat=+p.coords.latitude.toFixed(6);l.lng=+p.coords.longitude.toFixed(6);touch(l);toast('Place pinned');if(cb)cb()},()=>toast('Location is off. You can skip this.'),{enableHighAccuracy:true,timeout:15000});
+}
+
+/* media: photos and voice notes live on the phone first, then upload to Drive when sharing is on */
+let _idb=null;
+function idb(){return _idb||(_idb=new Promise((res,rej)=>{
+  if(!window.indexedDB){rej(new Error('no indexedDB'));return}
+  const r=indexedDB.open('homehunt_media',1);
+  r.onupgradeneeded=()=>{const s=r.result.createObjectStore('m',{keyPath:'id'});s.createIndex('lid','lid')};
+  r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);r.onblocked=()=>rej(new Error('blocked'));
+}))}
+function idbReq(mode,fn){return idb().then(d=>new Promise((res,rej)=>{
+  const t=d.transaction('m',mode);const q=fn(t.objectStore('m'));
+  t.oncomplete=()=>res(q&&q.result);t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error||new Error('aborted'));
+}))}
+const mediaPut=rec=>idbReq('readwrite',s=>s.put(rec));
+const mediaGet=id=>idbReq('readonly',s=>s.get(id));
+const mediaDel=id=>idbReq('readwrite',s=>s.delete(id));
+const mediaByListing=lid=>idbReq('readonly',s=>s.index('lid').getAll(lid)).then(a=>a||[]);
+const mediaAll=()=>idbReq('readonly',s=>s.getAll()).then(a=>a||[]);
+
+async function shrink(file){
+  try{
+    const bm=await createImageBitmap(file);
+    const s=Math.min(1,1280/Math.max(bm.width,bm.height));
+    const c=document.createElement('canvas');c.width=Math.round(bm.width*s);c.height=Math.round(bm.height*s);
+    c.getContext('2d').drawImage(bm,0,0,c.width,c.height);
+    const b=await new Promise(r=>c.toBlob(r,'image/jpeg',.72));
+    if(b&&b.size>0)return b;
+  }catch(e){}
+  if(file.size<=6e6)return file;
+  throw new Error('too big to resize');
+}
+async function addMedia(lid,kind,blob,mime,state){
+  const l=get(lid);if(!l)throw new Error('no listing');
+  const rec={id:uid()+uid().slice(0,3),lid:lid,kind:kind,mime:mime,blob:blob,ts:now(),by:cfg.user||'',state:state||'queued',tries:0,nextAt:0,driveId:'',url:'',err:''};
+  await mediaPut(rec);
+  l.media=l.media||[];l.media.push({id:rec.id,kind:kind,ts:rec.ts,by:rec.by,state:rec.state,url:''});
+  logEvent(kind==='voice'?'voice':'photo',l,{});touch(l);
+  pump();
+}
+async function addPhotos(lid,files){
+  let n=0,bad=0;
+  for(const f of files){
+    if(f.type&&!/^image\//.test(f.type)){bad++;continue}
+    try{const b=await shrink(f);await addMedia(lid,'photo',b,b.type||'image/jpeg');n++}catch(e){bad++}
+  }
+  toast(n?n+' photo'+(n>1?'s':'')+' saved on this phone'+(bad?', '+bad+' skipped':''):(window.indexedDB?'Could not save that photo. It may be too large.':'Saving photos is not available in a private tab.'));
+  afterMedia(lid);
+}
+function afterMedia(lid){loadMediaBox(lid);showSync();if(!vmS&&!$('#dlg').open&&!$('#dlg2').open)render()}
+function loadThumbs(){if(vmS)loadMediaBox(vmS.id)}
+function stateText(s){return {queued:(cfg.drive.consent&&cfg.sync.url)?'Waiting to upload':'On this phone, sharing is off',done:'Saved to Drive',local:'Phone only',failed:'Upload failed'}[s]||s}
+function mediaItem(r){
+  const u=URL.createObjectURL(r.blob);
+  return '<div class="card" style="padding:8px" data-id="'+esc(r.lid)+'" data-mid="'+esc(r.id)+'">'+
+    (r.kind==='voice'?'<audio controls preload="none" src="'+u+'" style="width:100%"></audio>':'<img alt="" src="'+u+'" style="width:100%;max-height:220px;object-fit:cover;border-radius:8px">')+
+    '<div class="meta">'+(r.kind==='voice'?'Voice note':'Photo')+' | '+new Date(r.ts).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})+' | '+esc(stateText(r.state))+(r.state==='failed'&&r.err?' ('+esc(r.err)+')':'')+'</div>'+
+    '<div class="actions">'+(r.state==='failed'?'<button type="button" class="btn sm" data-act="mretry">Retry</button>':'')+(r.state==='queued'?'<button type="button" class="btn sm" data-act="mlocal">Keep on phone only</button>':'')+(r.state==='local'?'<button type="button" class="btn sm" data-act="mqueue">Allow upload</button>':'')+'<button type="button" class="btn sm red" data-act="mdel">Remove from phone</button></div></div>';
+}
+async function loadMediaBox(lid){
+  const box=$('#mediabox');if(!box)return;
+  let recs=[];
+  try{recs=await mediaByListing(lid)}catch(e){box.innerHTML='<div class="meta">Photos and voice notes cannot be saved in this browser mode. Open HomeHunt in a normal Chrome tab.</div>';return}
+  const l=get(lid),meta=(l&&l.media)||[];
+  const other=meta.filter(m=>!recs.some(r=>r.id===m.id)).length;
+  recs.sort((a,b)=>a.ts-b.ts);
+  box.innerHTML=(recs.length?recs.map(mediaItem).join(''):'<div class="meta">No photos or voice notes on this phone yet. That is fine.</div>')+(other?'<div class="meta">'+other+' more added on another phone.</div>':'');
+}
+async function mediaSetState(mid,state){
+  const r=await mediaGet(mid);if(!r)return;
+  r.state=state;r.tries=0;r.err='';r.nextAt=0;await mediaPut(r);
+  syncMeta(r);afterMedia(r.lid);if(state==='queued')pump();
+}
+async function mediaRemove(mid){
+  const r=await mediaGet(mid);await mediaDel(mid);
+  if(r){const l=get(r.lid);if(l){l.media=(l.media||[]).filter(x=>x.id!==mid);touch(l)}afterMedia(r.lid)}
+}
+function syncMeta(r){const l=get(r.lid);if(!l)return;const m=(l.media||[]).find(x=>x.id===r.id);if(m){m.state=r.state;m.url=r.url||'';touch(l)}}
+
+/* upload queue: retries with backoff, safe to repeat because the server ignores duplicates */
+let pumping=false,pumpTimer=null;
+async function uploadOne(r){
+  const b64=await new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(String(fr.result).split(',')[1]||'');fr.onerror=()=>rej(fr.error);fr.readAsDataURL(r.blob)});
+  const body=JSON.stringify({key:cfg.sync.key,action:'media',listingId:r.lid,fileId:r.id,kind:r.kind,mime:r.mime,b64:b64,ts:r.ts,by:r.by});
+  const ac=typeof AbortController!=='undefined'?new AbortController():null;
+  const to=setTimeout(()=>{if(ac)ac.abort()},90000);
+  try{
+    const res=await fetch(cfg.sync.url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:body,signal:ac?ac.signal:undefined});
+    return await res.json();
+  }catch(e){
+    // The reply may have been lost even though the file arrived. Ask the server before retrying.
+    try{const s=await api({action:'mediaStatus',fileId:r.id});if(s.exists)return {ok:true,driveId:s.driveId,url:s.url}}catch(e2){}
+    throw e;
+  }finally{clearTimeout(to)}
+}
+async function pump(){
+  if(pumping||!cfg.drive.consent||!cfg.sync.url||!cfg.sync.key||!navigator.onLine)return;
+  pumping=true;let soonest=0;
+  try{
+    const all=(await mediaAll()).filter(r=>r.state==='queued').sort((a,b)=>a.ts-b.ts);
+    for(const r of all){
+      if(r.nextAt&&r.nextAt>Date.now()){soonest=soonest?Math.min(soonest,r.nextAt):r.nextAt;continue}
+      if(!get(r.lid))continue;
+      let j=null;
+      try{j=await uploadOne(r)}catch(e){
+        r.tries=(r.tries||0)+1;r.err=String((e&&e.message)||e).slice(0,80);r.nextAt=Date.now()+Math.min(600000,15000*Math.pow(2,r.tries));
+        if(r.tries>=8)r.state='failed';await mediaPut(r);syncMeta(r);
+        if(!navigator.onLine)break;continue;
+      }
+      if(j&&j.ok){r.state='done';r.driveId=j.driveId||'';r.url=j.url||'';r.err='';await mediaPut(r);syncMeta(r)}
+      else if(j&&j.retry){r.nextAt=Date.now()+30000;await mediaPut(r);soonest=soonest?Math.min(soonest,r.nextAt):r.nextAt;break}
+      else{
+        r.tries=(r.tries||0)+1;r.err=String((j&&j.error)||'upload error').slice(0,80);r.nextAt=Date.now()+Math.min(600000,15000*Math.pow(2,r.tries));
+        if(r.tries>=8||(j&&j.fatal))r.state='failed';await mediaPut(r);syncMeta(r);
+      }
+    }
+  }catch(e){}
+  pumping=false;showSync();
+  clearTimeout(pumpTimer);if(soonest)pumpTimer=setTimeout(pump,Math.max(5000,soonest-Date.now()));
+}
+async function testUpload(){
+  if(!cfg.sync.url||!cfg.sync.key){toast('Add the web app URL and key first');return}
+  try{await api({action:'ping'})}catch(e){toast('Cannot reach the server: '+e.message);return}
+  const rec={id:'test'+uid(),lid:'_test',kind:'photo',mime:'text/plain',blob:new Blob(['HomeHunt test '+new Date().toISOString()],{type:'text/plain'}),ts:now(),by:cfg.user||''};
+  try{const j=await uploadOne(rec);toast(j&&j.ok?'Upload works. A test file is in _diagnostics in Drive.':'Upload failed: '+((j&&j.error)||'unknown'))}
+  catch(e){toast('Upload could not be confirmed. Check the deployment settings in the guide.')}
+}
+
+/* voice notes */
+let rc=null;
+function recAbort(){
+  if(!rc)return;
+  try{clearInterval(rc.timer)}catch(e){}
+  try{if(rc.r&&rc.r.state!=='inactive'){rc.r.onstop=null;rc.r.stop()}}catch(e){}
+  try{if(rc.s)rc.s.getTracks().forEach(t=>t.stop())}catch(e){}
+  rc=null;
+}
+function openRec(lid){
+  if(!lid)return;
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||typeof MediaRecorder==='undefined'){toast('Voice notes are not supported in this browser');return}
+  $('#dlg2body').innerHTML='<div data-id="'+esc(lid)+'"><h2>Voice note</h2><div class="meta" style="margin:8px 0">Speak freely, up to 3 minutes. It stays on your phone unless sharing is on.</div><div class="vmq" id="rctime">0:00</div><div class="actions" style="margin-top:12px"><button type="button" class="btn gold" data-act="recgo">Start recording</button><button type="button" class="btn" data-act="recstop" disabled>Stop</button></div><div id="recout"></div><div class="actions" style="margin-top:12px"><button type="button" class="btn" data-act="reccancel">Close</button></div></div>';
+  $('#dlg2').showModal();
+}
+async function recGo(){
+  recAbort();
+  let s;
+  try{s=await navigator.mediaDevices.getUserMedia({audio:true})}
+  catch(e){toast(e&&e.name==='NotFoundError'?'No microphone found':'Microphone is blocked. Allow it in Chrome site settings.');return}
+  const mt=['audio/webm;codecs=opus','audio/webm','audio/mp4','audio/ogg'].find(t=>MediaRecorder.isTypeSupported(t))||'';
+  let r;
+  try{r=new MediaRecorder(s,mt?{mimeType:mt}:{})}catch(e){s.getTracks().forEach(t=>t.stop());toast('Recording is not supported on this device');return}
+  const chunks=[];
+  const lidEl=$('#dlg2body [data-id]');
+  rc={r:r,s:s,t0:Date.now(),lid:lidEl?lidEl.dataset.id:'',mime:r.mimeType||mt||'audio/webm',blob:null};
+  r.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
+  r.onstop=()=>{const me=rc;if(!me)return;clearInterval(me.timer);me.s.getTracks().forEach(t=>t.stop());me.blob=new Blob(chunks,{type:me.mime});recShow()};
+  r.start(1000);
+  rc.timer=setInterval(()=>{if(!rc)return;const sec=Math.floor((Date.now()-rc.t0)/1000);const el=$('#rctime');if(el)el.textContent=Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0');if(sec>=180)recStop()},500);
+  const g=$('#dlg2body [data-act=recgo]'),p=$('#dlg2body [data-act=recstop]');if(g)g.disabled=true;if(p)p.disabled=false;
+}
+function recStop(){if(rc&&rc.r&&rc.r.state!=='inactive')rc.r.stop()}
+function recShow(){
+  const out=$('#recout');if(!out||!rc)return;
+  if(!rc.blob||rc.blob.size<1000){out.innerHTML='<div class="meta" style="margin-top:8px">Nothing was recorded. Please try again.</div>';rc=null;const g=$('#dlg2body [data-act=recgo]');if(g)g.disabled=false;return}
+  out.innerHTML='<audio controls src="'+URL.createObjectURL(rc.blob)+'" style="width:100%;margin-top:10px"></audio><label style="display:flex;gap:8px;align-items:center;margin-top:8px;color:var(--cream)"><input type="checkbox" id="recprivate" style="width:auto">Keep on my phone only</label><div class="actions"><button type="button" class="btn gold" data-act="recsave">Save</button><button type="button" class="btn" data-act="recdiscard">Discard</button></div>';
+}
+async function recSave(){
+  const me=rc;if(!me||!me.blob)return;
+  const priv=$('#recprivate')&&$('#recprivate').checked;
+  try{await addMedia(me.lid,'voice',me.blob,me.mime,priv?'local':'queued');toast('Voice note saved')}
+  catch(e){toast('Could not save the voice note on this phone')}
+  rc=null;$('#dlg2').close();afterMedia(me.lid);
+}
+
+/* consent and rejection reason */
+function openConsent(){
+  $('#dlgbody').innerHTML='<h2>Before you turn on sharing</h2><div class="meta" style="margin:8px 0;line-height:1.6">Listing details, notes, call logs, photos and voice notes from this app are saved to a Google Sheet and Google Drive owned by the person who set this up (the admin). The admin can open them and sees progress charts. Anything you mark Phone only is never uploaded. You can turn sharing off at any time. Things already uploaded stay in Drive.</div><label>Your first name</label><input id="cname" value="'+esc(cfg.user)+'" placeholder="First name"><div class="actions" style="margin-top:14px"><button class="btn gold" data-act="consentyes">I understand, turn on</button><button class="btn" data-act="consentno">Not now</button></div>';
+  $('#dlg').showModal();
+}
+function openReject(id){
+  $('#dlgbody').innerHTML='<div data-id="'+esc(id)+'"><h2>Set this one aside</h2><div class="meta" style="margin:8px 0">Optional: what made it a no? It helps you see patterns later. Nothing is deleted.</div><div class="actions">'+['Too expensive','Too far','Did not feel safe','Owner or terms','Condition','Rented out','Other','Skip'].map(x=>'<button class="btn" data-act="rej" data-v="'+x+'">'+x+'</button>').join('')+'</div><div class="actions" style="margin-top:14px"><button class="btn" data-act="rejcancel">Keep it for now</button></div></div>';
+  $('#dlg').showModal();
+}
+
+/* hand-off to Claude without any API key */
+function buildPrompt(l){
+  const c=VQ.filter(q=>st(l,q.k)==='concern').map(q=>q.q);
+  const o=VQ.filter(q=>!['ok','concern'].includes(st(l,q.k))).map(q=>q.q);
+  return 'I just visited a flat and attached some photos. I need it to be a safe and comfortable place for a woman to live.\n\n'+
+   'Place: '+(l.title||'1 BHK')+(l.area?', '+l.area:'')+'. Rent '+inr(l.rent)+', deposit '+inr(l.deposit)+', '+l.furnishing+'.\n'+
+   (c.length?'Things that worried me: '+c.join(' | ')+'\n':'')+
+   (o.length?'Things I did not check: '+o.join(' | ')+'\n':'')+
+   '\nPlease give me three short lists:\n1. What you can see in the photos (damp, wiring, light, condition, the street, street lighting, garbage, anything else).\n2. What the photos cannot tell us (night safety, noise, water pressure, neighbours).\n3. What I should check or ask before deciding.\n\nPlease do not give an overall verdict. If the photos are unclear, say so.';
+}
+async function shareToClaude(id){
+  const l=get(id);let ph=[];try{ph=(await mediaByListing(id)).filter(r=>r.kind==='photo')}catch(e){}
+  if(!ph.length){toast('Add a photo first');return}
+  const txt=buildPrompt(l);
+  try{await navigator.clipboard.writeText(txt)}catch(e){}
+  const files=ph.slice(0,10).map((p,i)=>new File([p.blob],'photo'+(i+1)+'.jpg',{type:'image/jpeg'}));
+  try{if(navigator.canShare&&navigator.canShare({files})){await navigator.share({files:files,text:txt,title:'Visit photos'});toast('If the message is missing, paste it. It is copied.');return}}catch(e){if(e&&e.name==='AbortError')return}
+  toast('Message copied. Paste it in Claude and attach the photos.');window.open('https://claude.ai/new','_blank');
+}
+
+/* before you commit (soft, never a hard block) */
+function openPay(id){
+  const l=get(id);l.pay=l.pay||{};
+  const hrs=l.visitedAt?Math.round((Date.now()-l.visitedAt)/36e5):null;
+  $('#dlgbody').innerHTML='<div data-id="'+id+'"><h2>Before you commit</h2>'+
+   '<div class="meta" style="margin:8px 0">'+(hrs!=null&&hrs<12?'You visited about '+hrs+' hour'+(hrs===1?'':'s')+' ago. ':'')+'Taking a night to think is almost always fine. If someone says it must be today, treat that as a flag.</div>'+
+   '<div class="checks" style="grid-template-columns:1fr">'+PAYCK.map(([k,n])=>'<label><input type="checkbox" data-act="payck" data-k="'+k+'" '+(l.pay[k]?'checked':'')+'>'+esc(n)+'</label>').join('')+'</div>'+
+   '<div class="actions" style="margin-top:16px"><button class="btn gold" data-act="paysleep">Sleep on it</button><button class="btn" data-act="paytaken">Mark as taken anyway</button></div></div>';
+  $('#dlg').showModal();
+}
+
+/* visit mode */
+let vmS=null;
+function startVisit(id){
+  const l=get(id);if(!l||vmS)return;
+  l.vm=l.vm||{};
+  logEvent('visit_start',l,{});
+  vmS={id:id,i:0,wl:null};
+  vmS.timer=setTimeout(()=>toast('10 minutes in. Anything left to check? No rush.'),600000);
+  wakeOn();$('#vm').classList.add('on');vmRender();renderBanner();
+}
+async function wakeOn(){try{if(vmS&&'wakeLock' in navigator)vmS.wl=await navigator.wakeLock.request('screen')}catch(e){}}
+function closeVm(){
+  if(!vmS)return;clearTimeout(vmS.timer);try{if(vmS.wl)vmS.wl.release()}catch(e){}
+  vmS=null;$('#vm').classList.remove('on');$('#vm').innerHTML='';renderBanner();
+}
+function setBool(l,k,val){if(SAFETY.some(s=>s[0]===k)){l.safety=l.safety||{};l.safety[k]=val}else{l.cl=l.cl||{};l.cl[k]=val}}
+function vmAnswer(v){const l=get(vmS.id),q=VQ[vmS.i-1];l.vm=l.vm||{};l.vm[q.k]=v;setBool(l,q.k,v==='ok');touch(l);vmS.i++;vmRender()}
+function finishVisit(){
+  const l=get(vmS.id);const n=($('#vmnote')||{}).value;
+  if(n&&n.trim())l.notes=(l.notes?l.notes+'\n':'')+'Visit note: '+n.trim();
+  if(['new','called','scheduled'].includes(l.status))l.status='visited';
+  l.visitedAt=now();logEvent('visit_done',l,{gut:l.gut||0,worries:VQ.filter(q=>st(l,q.k)==='concern').length,answered:VQ.filter(q=>st(l,q.k)).length});
+  touch(l);closeVm();render();toast('Visit saved. No need to decide today.');
+}
+function vmRender(){
+  const l=get(vmS.id),N=VQ.length,i=vmS.i,tot=N+3;
+  const back='<button class="btn" data-act="vmback">Back</button>';
+  let h='<div class="vmtop"><b>'+esc(l.title||'Visit')+'</b><button class="btn sm" data-act="vmclose">Pause</button></div><div class="bar"><i style="width:'+Math.round(i/tot*100)+'%"></i></div><div class="vmbody">';
+  if(i===0){
+    h+='<div class="vmq">Take your time.</div><div class="vmhint">Everything saves as you go. You can pause whenever you like. You do not have to decide anything today.</div>';
+    h+='<div class="card"><b>Your must-haves</b><div class="meta">'+(cfg.deal||[]).map(k=>esc(LABEL[k]||k)).join('<br>')+'</div></div>';
+    h+='<button class="big" data-act="vmpin">'+(hasPin(l)?'Pinned. Tap to update the pin':'Pin this place using your location')+'</button><button class="big ok" data-act="vmnext">Begin</button>';
+  }else if(i<=N){
+    const q=VQ[i-1],cur=l.vm&&l.vm[q.k];
+    h+='<div class="vmhint">'+GROUPS[q.g]+'</div>'+((cfg.deal||[]).includes(q.k)?'<span class="flag good" style="align-self:flex-start">One of your must-haves</span>':'')+'<div class="vmq">'+q.q+'</div><div class="vmhint">'+q.h+'</div>';
+    h+=[['ok','Fine','ok'],['concern','Something worries me','warn'],['skip','Skip for now','']].map(a=>'<button class="big '+a[2]+(cur===a[0]?' sel':'')+'" data-act="vma" data-v="'+a[0]+'">'+a[1]+'</button>').join('');
+    h+='<div class="actions">'+back+'</div>';
+  }else if(i===N+1){
+    h+='<div class="vmq">A few photos</div><div class="vmhint">Entrance, the street outside, the living room, the bathroom, any damp or cracks. You can also leave a voice note. Files stay on this phone until sharing is on.</div>';
+    h+='<div class="actions"><button class="btn gold" data-act="cam">Take a photo</button><button class="btn" data-act="gal">From gallery</button><button class="btn" data-act="rec">Voice note</button></div><div id="mediabox"></div>';
+    h+='<button class="big ok" data-act="vmnext">Continue</button><div class="actions">'+back+'</div>';
+  }else if(i===N+2){
+    const concerns=VQ.filter(q=>st(l,q.k)==='concern'),open=VQ.filter(q=>!['ok','concern'].includes(st(l,q.k)));
+    h+='<div class="vmq">Before you leave</div><div class="vmhint">Nothing here is urgent. You can always come back.</div>';
+    h+='<div class="card"><b>Your must-haves</b>'+(cfg.deal||[]).map(k=>{const s=st(l,k);return '<div class="meta">'+(s==='ok'?'Fine':s==='concern'?'Worried':'Not checked yet')+': '+esc(LABEL[k]||k)+'</div>'}).join('')+'</div>';
+    if(concerns.length)h+='<div class="card"><b>Things that worried you</b>'+concerns.map(q=>'<div class="meta">'+esc(q.q)+'</div>').join('')+'</div>';
+    if(open.length)h+='<div class="card"><b>Not answered yet ('+open.length+')</b><div class="meta">That is fine. Skip them or go back to them.</div></div>';
+    h+='<label style="display:flex;gap:8px;align-items:flex-start;color:var(--cream);font-size:14px"><input type="checkbox" data-act="evening" style="width:auto;margin-top:3px" '+(l.evening?'checked':'')+'>I have seen the street after dark, or asked someone nearby how it feels at night</label><div class="vmhint">Not done yet is fine. Do it before you decide.</div>';
+    h+='<button class="big" data-act="vmshare">Ask Claude to look at my photos</button>';
+    if(open.length)h+='<button class="big" data-act="vmgoskip">Go to the first unanswered item</button>';
+    h+='<button class="big ok" data-act="vmnext">Continue</button><div class="actions">'+back+'</div>';
+  }else{
+    h+='<div class="vmq">Before you look at any score: how did this place feel?</div><div class="vmhint">1 is not for me. 5 is it felt right. Go with your first reaction.</div>';
+    h+='<div class="gutrow">'+[1,2,3,4,5].map(n=>'<button class="big'+(l.gut===n?' sel':'')+'" data-act="vmgut" data-v="'+n+'">'+n+'</button>').join('')+'</div>';
+    h+='<textarea id="vmnote" placeholder="One line to remember it by (optional)"></textarea><button class="big ok" data-act="vmfinish">Finish visit</button><div class="actions">'+back+'</div>';
+  }
+  $('#vm').innerHTML=h+'</div>';
+  if(i===N+1)loadThumbs();
+}
+
+/* ---------- events ---------- */
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-act],[data-tab]');if(!t)return;
+  if(t.dataset.tab){ui.tab=t.dataset.tab;render();return}
+  const act=t.dataset.act,cardEl=t.closest('[data-id]'),id=cardEl&&cardEl.dataset.id,l=id&&get(id);
+  if(act==='filter'){ui.filter=t.dataset.v;render()}
+  else if(act==='edit')openEdit(id);
+  else if(act==='closedlg')$('#dlg').close();
+  else if(act==='parse'){const o=parsePaste($('#paste').value||'');const f=$('#f');Object.keys(o).forEach(k=>{const el=f.elements[k];if(el&&o[k]!=='')el.value=o[k]});toast('Filled. Please check the fields.')}
+  else if(act==='delete'){if(confirm('Delete this listing?')){const x=get($('#f').dataset.id);x.deleted=true;touch(x);$('#dlg').close();render()}}
+  else if(act==='calllog'){
+    const o=prompt('Call outcome?\n1 No answer\n2 Spoke, still available\n3 Spoke, already rented out\n4 Spoke, will call back\n5 Negotiated, rent or deposit changed\nOr type a custom note');
+    if(!o)return;const map={1:'No answer',2:'Spoke: still available',3:'Spoke: already rented out',4:'Spoke: will call back',5:'Negotiated'};
+    const txt=map[o.trim()]||o;l.calls=(l.calls||[]);l.calls.push({t:new Date().toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}),txt:txt});
+    logEvent('call',l,{outcome:txt});
+    if(o.trim()==='3'){l.status='rejected';l.rejectReason='Rented out'}else if(l.status==='new')l.status='called';
+    touch(l);render();
+  }
+  else if(act==='autoorder'){
+    const a=dayList();const start=$('#vstart').value||'10:00',gap=+$('#vgap').value||60;
+    a.sort((x,y)=>{const i=stIdx(x),j=stIdx(y);return (i<0?99:i)-(j<0?99:j)||(x.area||'').localeCompare(y.area||'')});
+    let [h,m]=start.split(':').map(Number);
+    a.forEach(x=>{x.visitAt=ui.day+'T'+String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');touch(x);m+=gap;h+=Math.floor(m/60);m%=60});
+    render();
+  }
+  else if(act==='copyplan'){
+    const a=dayList();const txt=a.map((x,i)=>`${i+1}. ${x.visitAt.slice(11)} ${x.title} (${x.area}) ${inr(x.rent)} ${x.phone||''}`).join('\n')+'\nRoute: '+mapsRoute(a);
+    navigator.clipboard.writeText(txt).then(()=>toast('Plan copied'))
+  }
+  else if(act==='addday'){const first=dayList().length;if(first>=3&&!confirm('That would be visit number '+(first+1)+' today. Visits tend to blur together after three. Add it anyway?'))return;l.visitAt=ui.day+'T'+(first?'12:00':'10:00');if(['new','called','shortlisted'].includes(l.status))l.status='scheduled';touch(l);render()}
+  else if(act==='unsched'){l.visitAt='';if(l.status==='scheduled')l.status='called';touch(l);render()}
+  else if(act==='visited'){l.status='visited';touch(l);render();toast('Open the listing to tick the visit checklist')}
+  else if(act==='cmp'){const v=t.dataset.v;const i=ui.cmp.indexOf(v);if(i>=0)ui.cmp.splice(i,1);else if(ui.cmp.length<4)ui.cmp.push(v);else toast('Max 4');render()}
+  else if(act==='savecfg'){
+    ['rentMin','rentMax','depMin','depMax','officeWalk'].forEach(k=>cfg[k]=+$('#c_'+k).value||0);
+    cfg.moveIn=$('#c_moveIn').value||cfg.moveIn;cfg.deal=[0,1,2].map(i=>$('#c_d'+i).value);cfg.user=$('#c_user').value.trim();cfg.sync.url=$('#c_url').value.trim();cfg.sync.key=$('#c_key').value.trim();
+    persist();render();toast('Settings saved')
+  }
+  else if(act==='syncnow'){
+    cfg.sync.url=$('#c_url').value.trim();cfg.sync.key=$('#c_key').value.trim();persist();syncNow()
+  }
+  else if(act==='cam'){ui.mt=id||(vmS&&vmS.id)||'';if(ui.mt)$('#gcam').click()}
+  else if(act==='gal'){ui.mt=id||(vmS&&vmS.id)||'';if(ui.mt)$('#ggal').click()}
+  else if(act==='rec')openRec(id||(vmS&&vmS.id));
+  else if(act==='recgo')recGo();
+  else if(act==='recstop')recStop();
+  else if(act==='recsave')recSave();
+  else if(act==='recdiscard'||act==='reccancel'){recAbort();$('#dlg2').close()}
+  else if(act==='mretry'||act==='mqueue')mediaSetState(t.closest('[data-mid]').dataset.mid,'queued');
+  else if(act==='mlocal')mediaSetState(t.closest('[data-mid]').dataset.mid,'local');
+  else if(act==='mdel'){if(confirm('Remove this from the phone? If it already reached Drive, the Drive copy stays.'))mediaRemove(t.closest('[data-mid]').dataset.mid)}
+  else if(act==='shareon')openConsent();
+  else if(act==='shareoff'){cfg.drive.consent=false;persist();setSync('Local only');render();toast('Sharing is off. Anything already uploaded stays in Drive.')}
+  else if(act==='consentyes'){const nm=($('#cname').value||'').trim();if(!nm){toast('Please add your first name so the admin knows who did what');return}cfg.user=nm;cfg.drive.consent=true;persist();$('#dlg').close();render();toast('Sharing is on');if(cfg.sync.url&&cfg.sync.key)syncNow()}
+  else if(act==='consentno'){$('#dlg').close()}
+  else if(act==='testup')testUpload();
+  else if(act==='pumpnow'){const rs=db.filter(x=>(x.media||[]).some(m=>m.state==='failed')).map(x=>x.id);Promise.all(rs.map(async lid=>{for(const r of await mediaByListing(lid)){if(r.state==='failed')await mediaSetState(r.id,'queued')}})).then(()=>{pump();toast('Trying the waiting files')})}
+  else if(act==='rej'){const x=get(id);x.status='rejected';x.rejectReason=t.dataset.v==='Skip'?'':t.dataset.v;touch(x);$('#dlg').close();render()}
+  else if(act==='rejcancel'){$('#dlg').close()}
+  else if(act==='vmstart')startVisit(id||(vmS&&vmS.id));
+  else if(act==='gut'){startVisit(id);vmS.i=VQ.length+3;vmRender()}
+  else if(act==='dismiss'){ui.dis.push(id);renderBanner()}
+  else if(act==='watch')toggleWatch();
+  else if(act==='vmclose')closeVm();
+  else if(act==='vmnext'){vmS.i++;vmRender()}
+  else if(act==='vmback'){vmS.i=Math.max(0,vmS.i-1);vmRender()}
+  else if(act==='vma')vmAnswer(t.dataset.v);
+  else if(act==='vmpin')pinHere(get(vmS.id),vmRender);
+  else if(act==='vmshare')shareToClaude(vmS.id);
+  else if(act==='vmgoskip'){const x=get(vmS.id);const k=VQ.findIndex(q=>!['ok','concern'].includes(st(x,q.k)));if(k>=0){vmS.i=k+1;vmRender()}}
+  else if(act==='vmgut'){const x=get(vmS.id);x.gut=+t.dataset.v;touch(x);vmRender()}
+  else if(act==='vmfinish')finishVisit();
+  else if(act==='paysleep'){$('#dlg').close();toast('Good. Nothing is lost. Come back when you are ready.')}
+  else if(act==='paytaken'){l.status='taken';l.takenAt=Date.now();touch(l);$('#dlg').close();render();toast('Marked as taken')}
+  else if(act==='export'){
+    const b=new Blob([JSON.stringify({db,cfg},null,1)],{type:'application/json'});const a=document.createElement('a');
+    a.href=URL.createObjectURL(b);a.download='homehunt-backup-'+ymd(new Date())+'.json';a.click();
+  }
+});
+document.addEventListener('change',e=>{
+  const t=e.target;
+  if(t.dataset.act==='status'){const l=get(t.closest('[data-id]').dataset.id);if(t.value==='taken'&&l.status!=='taken'){openPay(l.id);render();return}if(t.value==='rejected'&&l.status!=='rejected'){openReject(l.id);render();return}if(l.status==='rejected'&&t.value!=='rejected')l.rejectReason='';l.status=t.value;if(t.value==='visited')l.visitedAt=l.visitedAt||Date.now();touch(l);render()}
+  else if(t.dataset.gph){const lid=ui.mt;const fl=[...t.files];t.value='';if(lid)addPhotos(lid,fl)}
+  else if(t.dataset.act==='evening'){const l=get(vmS.id);l.evening=t.checked;touch(l)}
+  else if(t.dataset.act==='payck'){const l=get(t.closest('[data-id]').dataset.id);l.pay=l.pay||{};l.pay[t.dataset.k]=t.checked;touch(l)}
+  else if(t.dataset.act==='vtime'){const l=get(t.closest('[data-id]').dataset.id);l.visitAt=ui.day+'T'+t.value;touch(l);render()}
+  else if(t.id==='sort'){ui.sort=t.value;render()}
+  else if(t.id==='vday'){ui.day=t.value;render()}
+  else if(t.id==='imp'){const r=new FileReader();r.onload=()=>{try{const j=JSON.parse(r.result);const inc=j.db||j;const m=new Map(db.map(x=>[x.id,x]));inc.forEach(x=>{const o=m.get(x.id);if(!o||(x.updatedAt||0)>(o.updatedAt||0))m.set(x.id,x)});db=[...m.values()];persist();render();toast('Imported')}catch(err){toast('Invalid file')}};r.readAsText(t.files[0])}
+});
+document.addEventListener('input',e=>{
+  const t=e.target;
+  if(t.id==='q'){ui.q=t.value;const pos=t.selectionStart;render();const q=$('#q');q.focus();q.setSelectionRange(pos,pos)}
+  else if(t.dataset.act==='weight'){cfg.w[t.dataset.k]=+t.value;$('#wv_'+t.dataset.k).textContent=t.value;persist()}
+});
+document.addEventListener('submit',e=>{if(e.target.id==='f'){e.preventDefault();saveForm(e.target)}});
+$('#fab').addEventListener('click',()=>openEdit(null));
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&vmS)wakeOn();if(!document.hidden&&cfg.sync.url)syncNow()});
+render();
+setInterval(renderBanner,60000);
+$('#dlg2').addEventListener('close',recAbort);
+window.addEventListener('online',()=>{if(cfg.sync.url)syncNow()});
+if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});
+if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0)navigator.serviceWorker.register('sw.js').catch(()=>{});
+if(cfg.sync.url)syncNow();else setSync('Local only');
+</script>
+</body>
+</html>
